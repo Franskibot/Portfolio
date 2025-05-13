@@ -394,11 +394,20 @@ nav { width: 100%; max-width: 1240px;
     border-bottom: 1px solid var(--border-color);
     -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
     mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+    cursor: grab; /* Indica che l'elemento è draggable */
 }
+
+.certifications-marquee:active {
+    cursor: grabbing; /* Cambia il cursore quando si sta trascinando */
+}
+
 .marquee-content {
     display: flex; white-space: nowrap;
-    animation: marqueeAnim 40s linear infinite;
+    /* Rimuoviamo l'animazione automatica perché ora gestiremo il movimento con JS */
+    /* animation: marqueeAnim 40s linear infinite; */
     will-change: transform;
+    user-select: none; /* Previene la selezione del testo durante il drag */
+    touch-action: pan-y; /* Migliora il comportamento su dispositivi touch */
 }
 .marquee-content span {
     font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 500;
@@ -406,10 +415,6 @@ nav { width: 100%; max-width: 1240px;
     display: flex; align-items: center;
 }
 .marquee-content i { color: var(--accent-primary); margin-left: 15px; width: 24px; height: 24px; }
-@keyframes marqueeAnim {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(-50%); }
-}
 
 
 /* --- CONTACT SECTION --- */

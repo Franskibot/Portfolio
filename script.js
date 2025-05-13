@@ -191,5 +191,154 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- MARQUEE DRAG SCROLLING WITH INERTIA ---
+    const marqueeElement = document.querySelector('.certifications-marquee');
+    const marqueeContent = document.querySelector('.marquee-content');
+    
+    if (marqueeElement && marqueeContent) {
+        let isDragging = false;
+        let startX;
+        let scrollLeft;
+        let velocity = 0;
+        let animationFrame;
+        let lastPageX;
+        let lastTimestamp = 0;
+        
+        // Clona il contenuto per creare l'effetto infinito
+        marqueeContent.innerHTML += marqueeContent.innerHTML;
+        
+        // Funzione per gestire l'inerzia
+        function handleInertia() {
+            if (Math.abs(velocity) > 0.5) {
+                // Applica la resistenza/attrito per rallentare gradualmente
+                velocity *= 0.95;
+                
+                // Aggiorna la posizione in base alla velocità
+                marqueeContent.style.transform = `translateX(${scrollLeft}px)`;
+                scrollLeft += velocity;
+                
+                // Logica per scrolling infinito
+                const contentWidth = marqueeContent.offsetWidth / 2;
+                if (scrollLeft < -contentWidth) {
+                    scrollLeft += contentWidth;
+                } else if (scrollLeft > 0) {
+                    scrollLeft -= contentWidth;
+                }
+                
+                animationFrame = requestAnimationFrame(handleInertia);
+            } else {
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+        
+        // Mouse/Touch Down
+        marqueeElement.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.pageX - marqueeContent.offsetLeft;
+            scrollLeft = parseInt(marqueeContent.style.transform.replace('translateX(', '').replace('px)', '')) || 0;
+            lastPageX = e.pageX;
+            lastTimestamp = Date.now();
+            velocity = 0;
+            
+            // Ferma qualsiasi animazione di inerzia in corso
+            cancelAnimationFrame(animationFrame);
+            
+            // Cambia stile durante il drag
+            marqueeElement.style.cursor = 'grabbing';
+        });
+        
+        // Mouse/Touch Move
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            const x = e.pageX - marqueeContent.offsetLeft;
+            const walk = (x - startX);
+            
+            // Calcola la velocità in base al tempo trascorso e alla distanza
+            const now = Date.now();
+            const dt = now - lastTimestamp;
+            if (dt > 0) {
+                const dx = e.pageX - lastPageX;
+                velocity = dx / dt * 15; // Moltiplica per un fattore per aumentare l'effetto
+            }
+            
+            lastTimestamp = now;
+            lastPageX = e.pageX;
+            
+            // Aggiorna la posizione
+            scrollLeft = scrollLeft + walk;
+            marqueeContent.style.transform = `translateX(${scrollLeft}px)`;
+            startX = x;
+        });
+        
+        // Mouse/Touch Up / Cancel
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                marqueeElement.style.cursor = 'grab';
+                
+                // Avvia l'animazione di inerzia
+                animationFrame = requestAnimationFrame(handleInertia);
+            }
+        });
+        
+        window.addEventListener('mouseleave', () => {
+            if (isDragging) {
+                isDragging = false;
+                marqueeElement.style.cursor = 'grab';
+                
+                // Avvia l'animazione di inerzia
+                animationFrame = requestAnimationFrame(handleInertia);
+            }
+        });
+        
+        // Supporto per dispositivi touch
+        marqueeElement.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            isDragging = true;
+            startX = touch.pageX - marqueeContent.offsetLeft;
+            scrollLeft = parseInt(marqueeContent.style.transform.replace('translateX(', '').replace('px)', '')) || 0;
+            lastPageX = touch.pageX;
+            lastTimestamp = Date.now();
+            velocity = 0;
+            
+            // Ferma qualsiasi animazione di inerzia in corso
+            cancelAnimationFrame(animationFrame);
+        });
+        
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            const touch = e.touches[0];
+            const x = touch.pageX - marqueeContent.offsetLeft;
+            const walk = (x - startX);
+            
+            // Calcola la velocità
+            const now = Date.now();
+            const dt = now - lastTimestamp;
+            if (dt > 0) {
+                const dx = touch.pageX - lastPageX;
+                velocity = dx / dt * 15;
+            }
+            
+            lastTimestamp = now;
+            lastPageX = touch.pageX;
+            
+            scrollLeft = scrollLeft + walk;
+            marqueeContent.style.transform = `translateX(${scrollLeft}px)`;
+            startX = x;
+        });
+        
+        window.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+                
+                // Avvia l'animazione di inerzia
+                animationFrame = requestAnimationFrame(handleInertia);
+            }
+        });
+    }
+
     console.log("Portfolio Reimagined JS Initialized");
 });
