@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contact-form');
     const currentYearEl = document.getElementById('currentYear');
     const timestampEl = document.getElementById('footer-timestamp');
+    const themeToggle = document.getElementById('theme-toggle');
 
     // --- PRELOADER & INITIAL ANIMATIONS ---
     window.addEventListener('load', () => {
@@ -64,6 +65,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
         }, 1800); // Durata minima del preloader, regola se necessario
+
+        // --- Imposta le larghezze delle barre di progresso ---
+        const progressBars = document.querySelectorAll('.skill-progress-fill');
+        progressBars.forEach((bar, index) => {
+            const width = bar.getAttribute('data-width');
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 500); // Piccolo ritardo per garantire che l'animazione funzioni
+        });
     });
 
     // --- HEADER BEHAVIOR ---
@@ -338,6 +348,66 @@ document.addEventListener('DOMContentLoaded', () => {
                 animationFrame = requestAnimationFrame(handleInertia);
             }
         });
+    }
+
+    // Inizializziamo un'animazione automatica di scorrimento
+    let autoScrollSpeed = -1; // Velocità negativa = scorrimento verso sinistra
+    let isAutoScrolling = true;
+
+    function startAutoScroll() {
+        function autoScroll() {
+            if (!isDragging && isAutoScrolling) {
+                scrollLeft += autoScrollSpeed;
+                marqueeContent.style.transform = `translateX(${scrollLeft}px)`;
+                
+                // Logica per scrolling infinito
+                const contentWidth = marqueeContent.offsetWidth / 2;
+                if (scrollLeft < -contentWidth) {
+                    scrollLeft += contentWidth;
+                } else if (scrollLeft > 0) {
+                    scrollLeft -= contentWidth;
+                }
+                
+                requestAnimationFrame(autoScroll);
+            }
+        }
+        
+        requestAnimationFrame(autoScroll);
+    }
+
+    // Inizia lo scorrimento automatico
+    startAutoScroll();
+
+    // Interrompi lo scorrimento automatico quando l'utente interagisce
+    marqueeElement.addEventListener('mouseenter', () => {
+        isAutoScrolling = false;
+    });
+
+    // Ripristina lo scorrimento automatico quando l'utente smette di interagire
+    marqueeElement.addEventListener('mouseleave', () => {
+        // Ritarda leggermente per permettere all'inerzia di completarsi
+        setTimeout(() => {
+            if (!isDragging) {
+                isAutoScrolling = true;
+                startAutoScroll();
+            }
+        }, 1000);
+    });
+
+    // --- THEME TOGGLE ---
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('light-theme');
+            // Salva la preferenza dell'utente
+            const currentTheme = document.documentElement.classList.contains('light-theme') ? 'light' : 'dark';
+            localStorage.setItem('theme', currentTheme);
+        });
+        
+        // Controlla se c'è una preferenza salvata
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('light-theme');
+        }
     }
 
     console.log("Portfolio Reimagined JS Initialized");

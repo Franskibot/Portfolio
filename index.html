@@ -24,11 +24,16 @@
             <a href="#hero" class="logo" aria-label="Francesco Tannoia Home">
                 FT<span class="accent-dot">.</span>
             </a>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">
+                <i data-lucide="sun" class="theme-icon light"></i>
+                <i data-lucide="moon" class="theme-icon dark"></i>
+            </button>
             <ul class="nav-links">
                 <li><a href="#about" class="nav-link" data-section-target="about"><span>01</span>Chi Sono</a></li>
                 <li><a href="#skills" class="nav-link" data-section-target="skills"><span>02</span>Competenze</a></li>
                 <li><a href="#certifications" class="nav-link" data-section-target="certifications"><span>03</span>Certificazioni</a></li>
                 <li><a href="#contact" class="nav-link" data-section-target="contact"><span>04</span>Contatti</a></li>
+                <li><a href="#education" class="nav-link" data-section-target="education"><span>05</span>Formazione</a></li>
             </ul>
             <button class="menu-toggle" aria-label="Apri menu">
                 <div class="menu-toggle-icon">
@@ -88,38 +93,98 @@
         </section>
 
         <section id="skills" class="content-section skills-section">
-            <div class="container">
-                <div class="section-header align-right">
-                    <span class="section-number">02</span>
-                    <h2 class="section-title" data-splitting data-animate-title>Competenze Chiave<span class="accent-dot">.</span></h2>
+    <div class="container">
+        <div class="section-header align-right">
+            <span class="section-number">02</span>
+            <h2 class="section-title" data-splitting data-animate-title>Competenze Chiave<span class="accent-dot">.</span></h2>
+        </div>
+        <div class="skills-list">
+            <div class="skill-item"> <span class="skill-number">01</span>
+                <h3 class="skill-name">Cyber Security & Ethical Hacking</h3>
+                <p class="skill-description">Analisi vulnerabilità, penetration testing, hardening sistemi.</p>
+                <div class="skill-keywords"><span>CISCO SEC</span><span>PENTEST+ PATH</span><span>LINUX SEC</span></div>
+            </div>
+            <div class="skill-item">
+                <span class="skill-number">02</span>
+                <h3 class="skill-name">Networking Avanzato (CCNA)</h3>
+                <p class="skill-description">Progettazione, implementazione e troubleshooting di reti complesse.</p>
+                 <div class="skill-keywords"><span>ROUTING</span><span>SWITCHING</span><span>IOT</span><span>AUTOMATION</span></div>
+            </div>
+            <div class="skill-item">
+                <span class="skill-number">03</span>
+                <h3 class="skill-name">Problem Solving & Innovazione</h3>
+                <p class="skill-description">Approccio analitico e creativo alla risoluzione di problemi non standard.</p>
+                 <div class="skill-keywords"><span>DEBUGGING</span><span>ALGORITHMS</span><span>CRITICAL THINKING</span></div>
+            </div>
+            <div class="skill-item">
+                <span class="skill-number">04</span>
+                <h3 class="skill-name">Sistemi Linux & Open Source</h3>
+                <p class="skill-description">Amministrazione, scripting e customizzazione di ambienti Linux.</p>
+                 <div class="skill-keywords"><span>BASH</span><span>DOCKER INTRO</span><span>SERVER MGMT</span></div>
+            </div>
+        </div>
+        
+        <div class="skills-progress-section" data-animate-text-block>
+            <h3 class="subsection-title">Livelli di Competenza</h3>
+            <div class="skills-progress-container">
+                <div class="skill-progress-item">
+                    <div class="skill-progress-header">
+                        <h4>Networking</h4>
+                        <span>85%</span>
+                    </div>
+                    <div class="skill-progress-bar">
+                        <div class="skill-progress-fill" data-width="85%"></div>
+                    </div>
                 </div>
-                <div class="skills-list">
-                    <div class="skill-item"> <span class="skill-number">01</span>
-                        <h3 class="skill-name">Cyber Security & Ethical Hacking</h3>
-                        <p class="skill-description">Analisi vulnerabilità, penetration testing, hardening sistemi.</p>
-                        <div class="skill-keywords"><span>CISCO SEC</span><span>PENTEST+ PATH</span><span>LINUX SEC</span></div>
+                <div class="skill-progress-item">
+                    <div class="skill-progress-header">
+                        <h4>Cybersecurity</h4>
+                        <span>75%</span>
                     </div>
-                    <div class="skill-item">
-                        <span class="skill-number">02</span>
-                        <h3 class="skill-name">Networking Avanzato (CCNA)</h3>
-                        <p class="skill-description">Progettazione, implementazione e troubleshooting di reti complesse.</p>
-                         <div class="skill-keywords"><span>ROUTING</span><span>SWITCHING</span><span>IOT</span><span>AUTOMATION</span></div>
+                    <div class="skill-progress-bar">
+                        <div class="skill-progress-fill" data-width="75%"></div>
                     </div>
-                    <div class="skill-item">
-                        <span class="skill-number">03</span>
-                        <h3 class="skill-name">Problem Solving & Innovazione</h3>
-                        <p class="skill-description">Approccio analitico e creativo alla risoluzione di problemi non standard.</p>
-                         <div class="skill-keywords"><span>DEBUGGING</span><span>ALGORITHMS</span><span>CRITICAL THINKING</span></div>
+                </div>
+                <div class="skill-progress-item">
+                    <div class="skill-progress-header">
+                        <h4>Linux</h4>
+                        <span>70%</span>
                     </div>
-                    <div class="skill-item">
-                        <span class="skill-number">04</span>
-                        <h3 class="skill-name">Sistemi Linux & Open Source</h3>
-                        <p class="skill-description">Amministrazione, scripting e customizzazione di ambienti Linux.</p>
-                         <div class="skill-keywords"><span>BASH</span><span>DOCKER INTRO</span><span>SERVER MGMT</span></div>
+                    <div class="skill-progress-bar">
+                        <div class="skill-progress-fill" data-width="70%"></div>
+                    </div>
+                </div>
+                <div class="skill-progress-item">
+                    <div class="skill-progress-header">
+                        <h4>HTML/CSS/JS</h4>
+                        <span>80%</span>
+                    </div>
+                    <div class="skill-progress-bar">
+                        <div class="skill-progress-fill" data-width="80%"></div>
+                    </div>
+                </div>
+                <div class="skill-progress-item">
+                    <div class="skill-progress-header">
+                        <h4>Python</h4>
+                        <span>60%</span>
+                    </div>
+                    <div class="skill-progress-bar">
+                        <div class="skill-progress-fill" data-width="60%"></div>
+                    </div>
+                </div>
+                <div class="skill-progress-item">
+                    <div class="skill-progress-header">
+                        <h4>IoT/Arduino</h4>
+                        <span>65%</span>
+                    </div>
+                    <div class="skill-progress-bar">
+                        <div class="skill-progress-fill" data-width="65%"></div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
         <section id="certifications" class="content-section certifications-section">
             <div class="container">
@@ -172,6 +237,163 @@
                         </button>
                     </form>
                 </div>
+            </div>
+        </section>
+
+        <section id="education" class="content-section education-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-number">05</span>
+            <h2 class="section-title" data-splitting data-animate-title>Percorso Formativo<span class="accent-dot">.</span></h2>
+        </div>
+        <div class="education-timeline" data-animate-text-block>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2020</div>
+                    <div class="timeline-content">
+                        <h4>Inizio percorso I.I.S.S. Marconi Hack</h4>
+                        <p>Primo approccio alle materie di indirizzo informatico</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2022</div>
+                    <div class="timeline-content">
+                        <h4>Specializzazione Informatica</h4>
+                        <p>Approfondimento sistemi e reti, programmazione avanzata</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2023</div>
+                    <div class="timeline-content">
+                        <h4>Prime certificazioni Cisco</h4>
+                        <p>Networking Basics e Introduction to Cybersecurity</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2024</div>
+                    <div class="timeline-content">
+                        <h4>Certificazioni avanzate</h4>
+                        <p>CCNA e progetti pratici di laboratorio</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2025</div>
+                    <div class="timeline-content">
+                        <h4>Diploma di Perito Informatico</h4>
+                        <p>Conclusione percorso formativo e ingresso nel mondo professionale</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <section id="interests" class="content-section interests-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-number">06</span>
+            <h2 class="section-title" data-splitting data-animate-title>Interessi<span class="accent-dot">.</span></h2>
+        </div>
+        <div class="interests-grid">
+            <div class="interest-card" data-animate-text-block>
+                <i data-lucide="code" class="interest-icon"></i>
+                <h3>Programmazione</h3>
+                <p>Esplorazione di nuovi linguaggi e framework, partecipazione a coding challenge e hackathon</p>
+            </div>
+            <div class="interest-card" data-animate-text-block>
+                <i data-lucide="shield-check" class="interest-icon"></i>
+                <h3>Cybersecurity</h3>
+                <p>CTF (Capture The Flag), analisi di vulnerabilità, studio di casi reali di data breach</p>
+            </div>
+            <div class="interest-card" data-animate-text-block>
+                <i data-lucide="cpu" class="interest-icon"></i>
+                <h3>Hardware & DIY</h3>
+                <p>Assemblaggio PC, progetti con Raspberry Pi, Arduino e microcontrollori</p>
+            </div>
+            <div class="interest-card" data-animate-text-block>
+                <i data-lucide="gamepad-2" class="interest-icon"></i>
+                <h3>Gaming</h3>
+                <p>Giochi strategici e multiplayer, con particolare interesse per gli aspetti tecnici e di networking</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <section id="projects" class="content-section projects-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">07</span>
+                    <h2 class="section-title" data-splitting data-animate-title>Progetti<span class="accent-dot">.</span></h2>
+                </div>
+                <div class="projects-grid improved">
+    <div class="project-card improved" data-animate-text-block>
+        <div class="project-image">
+            <img src="images/portfolio-preview.jpg" alt="Anteprima del portfolio">
+            <div class="project-overlay">
+                <a href="https://franskibot.github.io/Portfolio" class="view-project-btn" target="_blank">
+                    <i data-lucide="external-link"></i> Visualizza
+                </a>
+            </div>
+        </div>
+        <div class="project-info">
+            <h3 class="project-title">Portfolio Web Personale</h3>
+            <p>Sviluppato interamente da zero usando HTML5 semantico, CSS3 moderno (Flexbox, Grid, animazioni) e JavaScript vanilla per interattività e animazioni fluide.</p>
+            <div class="project-tech">
+                <span class="tech-tag">HTML5</span>
+                <span class="tech-tag">CSS3</span>
+                <span class="tech-tag">JavaScript</span>
+                <span class="tech-tag">Responsive</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="project-card improved" data-animate-text-block>
+        <div class="project-image">
+            <img src="images/github-preview.jpg" alt="Repository GitHub">
+            <div class="project-overlay">
+                <a href="https://github.com/Franskibot" class="view-project-btn" target="_blank">
+                    <i data-lucide="external-link"></i> Visualizza
+                </a>
+            </div>
+        </div>
+        <div class="project-info">
+            <h3 class="project-title">Repository GitHub</h3>
+            <p>Raccolta dei miei esercizi, script (Python, Bash), configurazioni di rete, progetti IoT e altre esplorazioni nel mondo della programmazione e dei sistemi informatici.</p>
+            <div class="project-tech">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Bash</span>
+                <span class="tech-tag">Networking</span>
+                <span class="tech-tag">IoT</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="project-card improved" data-animate-text-block>
+        <div class="project-image">
+            <img src="images/network-project.jpg" alt="Progetto di rete">
+            <div class="project-overlay">
+                <a href="#" class="view-project-btn">
+                    <i data-lucide="info"></i> Dettagli
+                </a>
+            </div>
+        </div>
+        <div class="project-info">
+            <h3 class="project-title">Simulazione Rete Aziendale</h3>
+            <p>Progetto scolastico di simulazione di una rete aziendale completa con Cisco Packet Tracer, includendo routing, VLAN, sicurezza e servizi di rete.</p>
+            <div class="project-tech">
+                <span class="tech-tag">Cisco</span>
+                <span class="tech-tag">Networking</span>
+                <span class="tech-tag">VLAN</span>
+                <span class="tech-tag">Routing</span>
+            </div>
+        </div>
+    </div>
+</div>
             </div>
         </section>
     </main>

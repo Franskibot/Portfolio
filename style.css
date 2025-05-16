@@ -539,3 +539,438 @@ nav { width: 100%; max-width: 1240px;
     .footer-links { align-items: center; }
     .footer-timestamp { text-align: center; margin-top: 15px; }
 }
+
+/* --- TIMELINE EDUCATIVA --- */
+.education-timeline {
+    margin-top: 60px;
+}
+
+.timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 40px auto 0;
+    padding-left: 40px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    background-color: var(--border-color);
+    top: 0;
+    bottom: 0;
+    left: 9px;
+    height: 100%;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+    transform: translateX(-30px);
+    opacity: 0;
+    transition: all 0.8s var(--ease-out-quart);
+}
+
+.content-section.loaded .timeline-item {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.content-section.loaded .timeline-item:nth-child(1) { transition-delay: 0.3s; }
+.content-section.loaded .timeline-item:nth-child(2) { transition-delay: 0.4s; }
+.content-section.loaded .timeline-item:nth-child(3) { transition-delay: 0.5s; }
+.content-section.loaded .timeline-item:nth-child(4) { transition-delay: 0.6s; }
+.content-section.loaded .timeline-item:nth-child(5) { transition-delay: 0.7s; }
+
+.timeline-dot {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: -29px;
+    background-color: var(--accent-primary);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.timeline-date {
+    color: var(--accent-primary);
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.timeline-content {
+    padding: 10px 0;
+}
+
+.timeline-content h4 {
+    margin-bottom: 5px;
+    color: var(--text-primary);
+}
+
+.timeline-content p {
+    color: var(--text-secondary);
+}
+
+/* --- SKILLS SECTION (Progress Bars) --- */
+.skills-progress-section {
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border-color);
+}
+
+.skills-progress-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.subsection-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+/* Assicurati che le barre abbiano padding */
+.skill-progress-bar {
+    height: 8px; /* Aumentato leggermente */
+    background-color: rgba(255, 74, 0, 0.1); /* Colore più tenue */
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.skill-progress-item {
+    margin-bottom: 20px;
+}
+
+.skill-progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.skill-progress-header h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.skill-progress-header span {
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.skill-progress-bar {
+    height: 6px;
+    background-color: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.skill-progress-fill {
+    height: 100%;
+    background-color: var(--accent-primary);
+    width: 0; /* Inizia a 0 */
+    transition: width 1.2s var(--ease-out-quart) 0.5s;
+}
+
+.content-section.loaded .skill-progress-fill {
+    width: attr(data-width); /* Invece usa JavaScript per impostare questa larghezza */
+}
+
+/* Animazioni sezioni competenze */
+.skills-progress-section [data-animate-text-block] {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.8s var(--ease-out-quart) 0.2s, transform 0.8s var(--ease-out-quart) 0.2s;
+}
+.skills-progress-section.loaded [data-animate-text-block] {
+    opacity: 1; transform: translateY(0);
+}
+.skills-progress-section.loaded .skill-progress-item {
+    opacity: 1; transform: translateY(0);
+    transition-delay: calc(var(--item-index) * 0.15s + 0.2s);
+}
+
+/* --- CERTIFICATION CARDS --- */
+.certification-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.certification-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 25px 20px;
+    text-align: center;
+    transition: transform 0.3s var(--ease-out-quart), 
+                box-shadow 0.3s var(--ease-out-quart),
+                border-color 0.3s;
+    transform: translateY(20px);
+    opacity: 0;
+}
+
+.content-section.loaded .certification-card {
+    transform: translateY(0);
+    opacity: 1;
+    transition-delay: calc(var(--card-index, 0) * 0.1s + 0.2s);
+}
+
+.certification-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border-color: var(--accent-primary);
+}
+
+.certification-logo {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 15px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: grayscale(50%);
+    transition: filter 0.3s, transform 0.3s;
+}
+
+.certification-card:hover .certification-logo {
+    filter: grayscale(0%);
+    transform: scale(1.1);
+}
+
+.certification-card h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.certification-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Placeholder per i logo (puoi sostituire con URL immagini reali) */
+.certification-logo.cisco {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Cisco_logo_blue_2016.svg/1200px-Cisco_logo_blue_2016.svg.png');
+}
+
+.certification-logo.security {
+    background-image: url('https://www.eccouncil.org/wp-content/uploads/2023/07/Certified-Ethical-Hacker-1.png');
+}
+
+.certification-logo.linux {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/1200px-Tux.svg.png');
+}
+
+/* Gli altri logo possono essere aggiunti similarmente */
+
+/* --- INTERESTS SECTION --- */
+.interests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.interest-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s var(--ease-out-quart), 
+                border-color 0.3s;
+}
+
+.interest-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-primary);
+}
+
+.interest-icon {
+    color: var(--accent-primary);
+    width: 40px;
+    height: 40px;
+    margin-bottom: 15px;
+}
+
+.interest-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.interest-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* --- IMPROVED PROJECTS --- */
+.projects-grid.improved {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 40px;
+    margin-top: 50px;
+}
+
+.project-card.improved {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s var(--ease-out-quart), 
+                box-shadow 0.3s var(--ease-out-quart);
+}
+
+.project-card.improved:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.project-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--ease-out-quart);
+}
+
+.project-card.improved:hover .project-image img {
+    transform: scale(1.05);
+}
+
+.project-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.project-card.improved:hover .project-overlay {
+    opacity: 1;
+}
+
+.view-project-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 15px;
+    background-color: var(--accent-primary);
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: transform 0.3s;
+}
+
+.view-project-btn:hover {
+    transform: scale(1.05);
+}
+
+.view-project-btn i {
+    margin-right: 5px;
+}
+
+.project-info {
+    padding: 25px;
+}
+
+.project-info h3 {
+    margin-bottom: 15px;
+    color: var(--text-primary);
+}
+
+.project-info p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tech-tag {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    background-color: rgba(255, 74, 0, 0.1);
+    color: var(--accent-primary);
+    border-radius: 20px;
+}
+
+/* --- DARK/LIGHT THEME TOGGLE --- */
+:root {
+    /* Le variabili già esistenti per il tema scuro */
+}
+
+:root.light-theme {
+    --bg-main: #f5f5f5;
+    --bg-surface: #ffffff;
+    --text-primary: #252525;
+    --text-secondary: #555555;
+    --border-color: #dddddd;
+    /* L'accent-primary può rimanere lo stesso */
+}
+
+.theme-toggle {
+    position: relative;
+    background: transparent;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    transition: background-color 0.3s;
+}
+
+.theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-icon {
+    position: absolute;
+    transition: transform 0.5s var(--ease-out-quart), opacity 0.5s;
+}
+
+.theme-icon.light {
+    opacity: 1;
+    transform: rotate(0);
+}
+
+.theme-icon.dark {
+    opacity: 0;
+    transform: rotate(-90deg);
+}
+
+:root.light-theme .theme-icon.light {
+    opacity: 0;
+    transform: rotate(90deg);
+}
+
+:root.light-theme .theme-icon.dark {
+    opacity: 1;
+    transform: rotate(0);
+}
