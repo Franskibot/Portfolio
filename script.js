@@ -1,414 +1,433 @@
+// js/script.js
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Initialize Splitting.js for text animations ---
-    // Splitting.js divide il testo in parole e caratteri per animazioni più fini.
-    // Si applica agli elementi con l'attributo `data-splitting`.
-    if (typeof Splitting === 'function') {
-        Splitting();
+    // --- SPLITTING JS INITIALIZATION ---
+    Splitting();
+
+    // --- LENIS SMOOTH SCROLL ---
+    const lenis = new Lenis({
+        duration: 1.5,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        wheelMultiplier: 0.8,
+        smoothTouch: true,
+        touchMultiplier: 1.5,
+    });
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
     }
+    requestAnimationFrame(raf);
+    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
 
-    // --- Initialize Lucide Icons ---
-    // Se le icone Lucide sono usate, questo le renderizza.
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
+    // --- CURSOR ---
+    const cursor = document.querySelector('.cursor-ft');
+    const cursorDot = cursor.querySelector('.cursor-ft-dot');
+    const cursorOutline = cursor.querySelector('.cursor-ft-outline');
+    let mouseX = 0, mouseY = 0;
+    let dotX = 0, dotY = 0;
+    let outlineX = 0, outlineY = 0;
+    const outlineDelay = 0.1;
 
-    // --- Element Selectors ---
-    const preloader = document.querySelector('.preloader');
-    const mainHeader = document.getElementById('main-header');
-    const navLinksContainer = document.querySelector('.nav-links');
-    const menuToggle = document.querySelector('.menu-toggle');
-    const allNavLinks = document.querySelectorAll('.nav-link');
-    const heroSection = document.getElementById('hero');
-    const heroSubtitle = document.querySelector('.hero-subtitle');
-    // const scrollIndicator = document.querySelector('.scroll-indicator'); // L'animazione è gestita da .hero-section.loaded
-    // const heroCta = document.querySelector('.hero-cta'); // L'animazione è gestita da .hero-section.loaded
-    const sectionsToAnimate = document.querySelectorAll('section.content-section');
-    const contactForm = document.getElementById('contact-form');
-    const currentYearEl = document.getElementById('currentYear');
-    const timestampEl = document.getElementById('footer-timestamp');
-    const themeToggle = document.getElementById('theme-toggle');
+    gsap.set(cursor, { xPercent: -50, yPercent: -50 });
+    gsap.set(cursorDot, { xPercent: -50, yPercent: -50 });
+    gsap.set(cursorOutline, { xPercent: -50, yPercent: -50 });
 
-    // --- PRELOADER & INITIAL ANIMATIONS ---
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            if (preloader) {
-                preloader.classList.add('loaded');
-            }
-            document.body.classList.add('loaded'); // Per animazioni globali post-load
-
-            if (heroSection) {
-                heroSection.classList.add('loaded'); // Triggera animazioni specifiche della hero
-            }
-            if (heroSubtitle) {
-                heroSubtitle.classList.add('visible'); // Triggera animazione del sottotitolo hero
-            }
-
-            // Inizializza Intersection Observers dopo il caricamento e il preloader
-            sectionsToAnimate.forEach(section => {
-                // La hero section ha già la sua classe 'loaded', non serve ri-osservarla con questo observer principale.
-                // Altre sezioni verranno osservate per triggerare le loro animazioni.
-                if (section.id !== 'hero') {
-                    // console.log("Observing section:", section.id); // Debug
-                    contentObserver.observe(section);
-                }
-            });
-
-            if (contactForm) {
-                // console.log("Observing contact form"); // Debug
-                contactFormObserver.observe(contactForm);
-            }
-
-            // Imposta la variabile CSS --item-index per l'animazione staggerata delle competenze
-            const skillItems = document.querySelectorAll('.skill-item');
-            skillItems.forEach((item, index) => {
-                item.style.setProperty('--item-index', index);
-            });
-
-        }, 1800); // Durata minima del preloader, regola se necessario
-
-        // --- Imposta le larghezze delle barre di progresso ---
-        const progressBars = document.querySelectorAll('.skill-progress-fill');
-        progressBars.forEach((bar, index) => {
-            const width = bar.getAttribute('data-width');
-            setTimeout(() => {
-                bar.style.width = width;
-            }, 500); // Piccolo ritardo per garantire che l'animazione funzioni
-        });
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        gsap.to(cursorDot, { duration: 0.03, x: mouseX, y: mouseY });
     });
 
-    // --- HEADER BEHAVIOR ---
-    let lastScrollTop = 0;
-    if (mainHeader) {
-        window.addEventListener('scroll', () => {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop > lastScrollTop && scrollTop > mainHeader.offsetHeight) {
-                mainHeader.classList.add('header-hidden'); // Nascondi scendendo
-            } else {
-                mainHeader.classList.remove('header-hidden'); // Mostra salendo o in cima
+    gsap.ticker.add(() => {
+        outlineX += (mouseX - outlineX) * outlineDelay;
+        outlineY += (mouseY - outlineY) * outlineDelay;
+        gsap.set(cursorOutline, { x: outlineX, y: outlineY });
+    });
+    
+    document.querySelectorAll('a, button, .btn-ft, .ft-project-item-link, .ft-menu-toggle, input, textarea, .ft-social-icon-link, .email-magnet-ft').forEach(el => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('cursor-ft-hover'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-ft-hover'));
+    });
+    document.querySelectorAll('h1, h2, h3, h4, .ft-nav-link span, .ft-logo a, .btn-ft span, .ft-section-tag, .ft-method-link, .ft-project-title').forEach(el => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('cursor-ft-text-hover'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-ft-text-hover'));
+    });
+
+
+    // --- PRELOADER ANIMATION ---
+    const preloader = document.querySelector('.preloader-ft');
+    const preloaderCells = gsap.utils.toArray('.preloader-ft-cell');
+    const preloaderLine = document.querySelector('.preloader-ft-line');
+
+    if (preloader && preloaderCells.length && preloaderLine) {
+        document.body.style.overflow = 'hidden'; // Prevent scroll during preloader
+        const preloaderTl = gsap.timeline({
+            onComplete: () => {
+                if (preloader) preloader.style.display = 'none';
+                document.body.style.overflow = '';
+                initPageAnimations();
             }
-            if (scrollTop > 50) {
-                mainHeader.classList.add('header-scrolled'); // Cambia sfondo dopo un po' di scroll
-            } else {
-                mainHeader.classList.remove('header-scrolled');
-            }
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-        }, { passive: true });
+        });
+        preloaderTl
+            .to(preloaderCells, {
+                opacity: 1,
+                scale: 1,
+                stagger: {
+                    each: 0.05,
+                    from: "random"
+                },
+                duration: 0.6,
+                ease: "power2.out"
+            })
+            .to(preloaderLine, {
+                width: "80%",
+                duration: 1,
+                ease: "power3.inOut"
+            }, "-=0.3")
+            .to(preloaderCells, {
+                opacity: 0,
+                y: -20,
+                stagger: {
+                    each: 0.03,
+                    from: "end"
+                },
+                duration: 0.4,
+                ease: "power1.in"
+            }, "-=0.3")
+            .to(preloaderLine, {
+                width: "100%",
+                opacity: 0,
+                duration: 0.3,
+                ease: "power1.in"
+            }, "-=0.2")
+            .to(preloader, {
+                opacity: 0,
+                duration: 0.5,
+                ease: "power2.inOut"
+            });
+    } else {
+        if (preloader) preloader.style.display = 'none';
+        document.body.style.overflow = '';
+        initPageAnimations();
     }
 
-    // --- MOBILE MENU ---
-    if (menuToggle && navLinksContainer) {
-        menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            navLinksContainer.classList.toggle('active');
-            // Blocca lo scroll del body quando il menu è aperto
-            document.body.style.overflow = navLinksContainer.classList.contains('active') ? 'hidden' : '';
+
+    // --- MAIN PAGE ANIMATIONS FUNCTION ---
+    function initPageAnimations() {
+        // Header Animation
+        gsap.to(".ft-main-header", {
+            y: 0,
+            duration: 1,
+            ease: "expo.out",
+            delay: 0.2 // Delay after preloader
         });
 
-        allNavLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (navLinksContainer.classList.contains('active')) {
-                    menuToggle.classList.remove('active');
-                    navLinksContainer.classList.remove('active');
-                    document.body.style.overflow = '';
+        // Hero Section Animations
+        const heroTl = gsap.timeline({ defaults: { ease: "power3.out" }});
+        heroTl
+            .fromTo(".ft-hero-eyebrow span", { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.8, delay: 0.5 }) // Start after header
+            .fromTo(".ft-hero-title .title-line .char",
+                { opacity:0, yPercent: 100, rotationZ: 10 },
+                { opacity:1, yPercent: 0, rotationZ: 0, stagger: 0.03, duration: 1, ease: "expo.out" }, "-=0.5")
+            .fromTo(".ft-hero-subtitle", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8 }, "-=0.7")
+            .fromTo(".ft-hero-cta-container", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8 }, "-=0.6")
+            .fromTo(".ft-hero-bottom-bar", { opacity: 0, yPercent: 100 }, { opacity: 1, yPercent: 0, duration: 1, ease: "expo.out"}, "-=0.7");
+
+        // Hero background shapes parallax
+        gsap.utils.toArray(".ft-hero-background-visual .ft-bg-shape").forEach(shape => {
+            gsap.to(shape, {
+                x: () => gsap.utils.random(-100, 100, 1),
+                y: () => gsap.utils.random(-150, 150, 1),
+                rotation: () => gsap.utils.random(-90, 90, 1),
+                scale: () => gsap.utils.random(0.8, 1.5, 0.1),
+                scrollTrigger: {
+                    trigger: ".ft-hero-section",
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: 1.5 + Math.random() * 2,
                 }
             });
         });
-    }
-
-    // --- INTERSECTION OBSERVER FOR CONTENT SECTIONS ANIMATIONS ---
-    const contentObserverOptions = {
-        root: null, // Relativo al viewport
-        rootMargin: '0px',
-        threshold: 0.15 // Triggera quando il 15% della sezione è visibile
-    };
-
-    const contentRevealCallback = (entries, observerInstance) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // console.log(entry.target.id || entry.target.className, "is intersecting, ADDING .loaded class"); // Debug
-                entry.target.classList.add('loaded'); // Aggiunge .loaded alla SECTION
-                observerInstance.unobserve(entry.target); // Non osservare più una volta animato
+        gsap.to(".ft-hero-background-visual .ft-bg-grid-pattern", {
+            yPercent: -30,
+            scrollTrigger: {
+                trigger: ".ft-hero-section",
+                start: "top top",
+                end: "bottom top",
+                scrub: true
             }
         });
-    };
-    const contentObserver = new IntersectionObserver(contentRevealCallback, contentObserverOptions);
-    // L'osservazione delle sezioni (`sectionsToAnimate`) è avviata nell'evento 'load'
 
-    // --- INTERSECTION OBSERVER FOR CONTACT FORM ---
-    const contactFormObserverOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.25 // Triggera quando il 25% del form è visibile
-    };
-    const contactFormRevealCallback = (entries, observerInstance) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // console.log("Contact form is intersecting, ADDING .visible class"); // Debug
-                entry.target.classList.add('visible'); // Aggiunge .visible al FORM
-                observerInstance.unobserve(entry.target);
+
+        // General Scroll-Triggered Animations for Sections and Elements
+        gsap.utils.toArray("section").forEach((section, i) => {
+            const sectionTitle = section.querySelector(".ft-section-title");
+            if (sectionTitle) {
+                const chars = sectionTitle.querySelectorAll(".char");
+                if (chars.length > 0) {
+                     gsap.fromTo(chars,
+                        { opacity:0, yPercent: 100, skewY: 7 },
+                        {
+                            opacity:1, yPercent: 0, skewY: 0,
+                            stagger: 0.02, duration: 0.8, ease: "circ.out",
+                            scrollTrigger: { trigger: sectionTitle, start: "top 85%", toggleActions: "play none none none" }
+                        }
+                    );
+                }
+            }
+            const sectionTag = section.querySelector(".ft-section-tag");
+            if (sectionTag) {
+                gsap.fromTo(sectionTag, { opacity: 0, y: 20, scale:0.9 }, {
+                    opacity: 1, y: 0, scale:1, duration: 0.6, ease: "power2.out",
+                    scrollTrigger: { trigger: sectionTag, start: "top 90%", toggleActions: "play none none none" }
+                });
             }
         });
-    };
-    const contactFormObserver = new IntersectionObserver(contactFormRevealCallback, contactFormObserverOptions);
-    // L'osservazione del form (`contactForm`) è avviata nell'evento 'load'
 
-    // --- ACTIVE NAV LINK ON SCROLL ---
-    const sectionsForNavHighlight = document.querySelectorAll('section[id]'); // Prende tutte le sezioni con un ID
-    if (mainHeader && allNavLinks.length > 0 && sectionsForNavHighlight.length > 0) {
-        window.addEventListener('scroll', () => {
-            let currentActiveSectionId = '';
-            sectionsForNavHighlight.forEach(section => {
-                const sectionTop = section.offsetTop;
-                // L'offsetHeight dell'header + un piccolo buffer per triggerare prima
-                if (pageYOffset >= sectionTop - mainHeader.offsetHeight - 100) {
-                    currentActiveSectionId = section.getAttribute('id');
+        // Generic [data-anim] reveal
+        gsap.utils.toArray("[data-anim]").forEach(el => {
+            const delay = parseFloat(el.dataset.delay) || 0;
+            const type = el.dataset.anim;
+
+            let fromState = { opacity: 0 };
+            if (type === "fade-up") fromState.y = 50;
+            if (type === "fade-left") fromState.x = -50;
+            if (type === "fade-right") fromState.x = 50;
+            if (type === "scale-in") { fromState.scale = 0.8; fromState.y = 0; }
+
+            gsap.fromTo(el, fromState, {
+                opacity: 1, y: 0, x: 0, scale: 1,
+                duration: 1,
+                delay: delay,
+                ease: "expo.out",
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 88%",
+                    toggleActions: "play none none none",
                 }
             });
+        });
+        
+        // Parallax Dividers
+        gsap.utils.toArray(".parallax-divider-ft svg").forEach(svg => {
+            const speed = parseFloat(svg.closest(".parallax-divider-ft").dataset.speed) || 1;
+            gsap.to(svg, {
+                yPercent: -30 * speed,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: svg.closest(".parallax-divider-ft"),
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
+                }
+            });
+        });
 
-            allNavLinks.forEach(link => {
+        // About Section - Visual Stack Animation
+        const visualCards = gsap.utils.toArray(".ft-visual-stack .ft-visual-card");
+        if (visualCards.length) {
+            gsap.fromTo(visualCards,
+                { opacity:0, y:50, rotationZ: (i) => (i % 2 === 0 ? -5 : 5) },
+                {
+                    opacity:1, y:0, rotationZ: (i) => (i % 2 === 0 ? -2 : 3),
+                    stagger:0.15, duration:1, ease:"expo.out",
+                    scrollTrigger: { trigger: ".ft-visual-stack", start:"top 80%" }
+                }
+            );
+        }
+        // Tech icons animation in About
+        const techIcons = gsap.utils.toArray('.ft-tech-icon-grid span');
+        if (techIcons.length) {
+            gsap.fromTo(techIcons,
+                { opacity: 0, scale: 0.5 },
+                {
+                    opacity: 1, scale: 1, stagger: 0.05, duration: 0.5, ease: "back.out(1.7)",
+                    scrollTrigger: { trigger: ".ft-tech-icon-grid", start: "top 90%" }
+                }
+            );
+        }
+        
+        // Project Items Interaction & Animation
+        const projectItems = gsap.utils.toArray(".ft-project-item");
+        if (projectItems.length) {
+            gsap.fromTo(projectItems,
+                { opacity:0, y:60, rotationX:-10, transformPerspective: 1000},
+                {
+                    opacity:1, y:0, rotationX:0,
+                    stagger:0.15, duration:1, ease:"expo.out",
+                    scrollTrigger: { trigger: ".ft-projects-grid", start:"top 80%" }
+                }
+            );
+        }
+        // Project item details toggle
+        document.querySelectorAll('.ft-project-item-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Allow default behavior if it's a real link to another page/site (e.g. GitHub)
+                if (this.getAttribute('href') && this.getAttribute('href') !== '#' && this.getAttribute('target') === '_blank') {
+                    return;
+                }
+                e.preventDefault();
+                const item = this.closest('.ft-project-item');
+                if (item) {
+                    item.classList.toggle('details-visible');
+                    ScrollTrigger.refresh();
+                }
+            });
+        });
+
+
+        // Skills Section Bars Animation
+        gsap.utils.toArray(".ft-skill-progress").forEach(bar => {
+            const targetWidth = bar.style.width; // Get target width from inline style
+            gsap.fromTo(bar, 
+                { width: "0%" }, // Start from 0%
+                {
+                width: targetWidth,
+                duration: 1.5,
+                ease: "power3.inOut",
+                scrollTrigger: {
+                    trigger: bar.closest(".ft-skill-item"),
+                    start: "top 85%",
+                    toggleActions: "play none none none"
+                }
+            });
+        });
+        
+        // Contact Form Animation
+        const contactFormArea = document.querySelector(".ft-contact-form-area");
+        if (contactFormArea) {
+             gsap.fromTo(contactFormArea,
+                { opacity:0, scale:0.95, filter: "blur(3px)" },
+                {
+                    opacity:1, scale:1, filter: "blur(0px)",
+                    duration:1, ease:"expo.out",
+                    scrollTrigger: { trigger: contactFormArea, start:"top 80%" }
+                }
+            );
+        }
+        // Form input label animation
+        const inputs = document.querySelectorAll('.ft-contact-form input, .ft-contact-form textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => input.closest('.ft-form-group').classList.add('focused'));
+            input.addEventListener('blur', () => {
+                if (!input.value) input.closest('.ft-form-group').classList.remove('focused');
+            });
+             // Initialize focused state for pre-filled inputs (e.g. browser autofill)
+            if (input.value) {
+                input.closest('.ft-form-group').classList.add('focused');
+            }
+        });
+        const contactForm = document.getElementById('ft-contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Grazie per il tuo messaggio! (Questo è un demo, il form non invia dati reali)');
+                this.reset();
+                 inputs.forEach(input => {
+                    input.closest('.ft-form-group').classList.remove('focused')
+                 });
+            });
+        }
+
+
+        // Magnetic Buttons (GSAP)
+        document.querySelectorAll('.btn-ft-magnetic, .email-magnet-ft').forEach(btn => {
+            const strength = btn.classList.contains('email-magnet-ft') ? 40 : 20;
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                gsap.to(btn, {
+                    x: x * 0.3,
+                    y: y * 0.3,
+                    duration: 0.5,
+                    ease: 'elastic.out(1, 0.5)'
+                });
+                 if (btn.querySelector('.btn-ft-arrow')) {
+                    gsap.to(btn.querySelector('.btn-ft-arrow'), {
+                        x: x * 0.1,
+                        y: y * 0.1,
+                        duration: 0.5,
+                        ease: 'elastic.out(1, 0.5)'
+                    });
+                }
+            });
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
+                 if (btn.querySelector('.btn-ft-arrow')) {
+                    gsap.to(btn.querySelector('.btn-ft-arrow'), { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
+                }
+            });
+        });
+        
+        // Active Nav Link on Scroll
+        const navLinks = document.querySelectorAll('.ft-main-nav a');
+        const pageSections = document.querySelectorAll('section[id]');
+        const varHeaderHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height-ft')) || 80;
+        
+        function updateActiveNavLink() {
+            let currentSectionId = '';
+            const headerOffset = varHeaderHeight + 50;
+
+            pageSections.forEach(section => {
+                const sectionTop = section.offsetTop - headerOffset;
+                if (lenis.scroll >= sectionTop) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
                 link.classList.remove('active');
-                // Controlla se l'href del link corrisponde (ignorando '#') all'ID della sezione corrente
-                if (link.getAttribute('href') && link.getAttribute('href').substring(1) === currentActiveSectionId) {
+                const linkHref = link.getAttribute('href');
+                if (linkHref && linkHref.substring(1) === currentSectionId) {
                     link.classList.add('active');
                 }
             });
-        }, { passive: true });
-    }
-
-    // --- FOOTER ---
-    if (currentYearEl) {
-        currentYearEl.textContent = new Date().getFullYear();
-    }
-    function updateTimestamp() {
-        if (timestampEl) {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-            // const dateString = now.toLocaleDateString('it-IT', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
-            // timestampEl.innerHTML = `Local time: ${timeString} <br> ${dateString}`;
-            timestampEl.textContent = `Ora Locale: ${timeString} (Italia)`; // Semplificato
         }
-    }
-    updateTimestamp(); // Chiama subito
-    setInterval(updateTimestamp, 60000); // Aggiorna ogni minuto
 
-    // --- CONTACT FORM SUBMISSION (SIMULATED) ---
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Qui potresti aggiungere una vera logica di invio con Fetch API, ecc.
-            alert('Messaggio inviato (simulazione)! Grazie per avermi contattato, Francesco.');
-            contactForm.reset(); // Resetta i campi del form
-        });
-    }
-
-    // --- MARQUEE DRAG SCROLLING WITH INERTIA ---
-    const marqueeElement = document.querySelector('.certifications-marquee');
-    const marqueeContent = document.querySelector('.marquee-content');
-    
-    if (marqueeElement && marqueeContent) {
-        let isDragging = false;
-        let startX;
-        let scrollLeft;
-        let velocity = 0;
-        let animationFrame;
-        let lastPageX;
-        let lastTimestamp = 0;
+        if (pageSections.length && navLinks.length) {
+            lenis.on('scroll', updateActiveNavLink);
+            updateActiveNavLink();
+        }
         
-        // Clona il contenuto per creare l'effetto infinito
-        marqueeContent.innerHTML += marqueeContent.innerHTML;
-        
-        // Funzione per gestire l'inerzia
-        function handleInertia() {
-            if (Math.abs(velocity) > 0.5) {
-                // Applica la resistenza/attrito per rallentare gradualmente
-                velocity *= 0.95;
-                
-                // Aggiorna la posizione in base alla velocità
-                marqueeContent.style.transform = `translateX(${scrollLeft}px)`;
-                scrollLeft += velocity;
-                
-                // Logica per scrolling infinito
-                const contentWidth = marqueeContent.offsetWidth / 2;
-                if (scrollLeft < -contentWidth) {
-                    scrollLeft += contentWidth;
-                } else if (scrollLeft > 0) {
-                    scrollLeft -= contentWidth;
+        // Smooth scroll to section on nav link click
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                 if (targetId && targetId.startsWith("#") && document.querySelector(targetId)) {
+                    lenis.scrollTo(targetId, { offset: -varHeaderHeight + 1 });
+                } else if (targetId === "#hero-ft" || targetId === "#") {
+                     lenis.scrollTo(0);
                 }
-                
-                animationFrame = requestAnimationFrame(handleInertia);
-            } else {
-                cancelAnimationFrame(animationFrame);
-            }
-        }
-        
-        // Mouse/Touch Down
-        marqueeElement.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.pageX - marqueeContent.offsetLeft;
-            scrollLeft = parseInt(marqueeContent.style.transform.replace('translateX(', '').replace('px)', '')) || 0;
-            lastPageX = e.pageX;
-            lastTimestamp = Date.now();
-            velocity = 0;
-            
-            // Ferma qualsiasi animazione di inerzia in corso
-            cancelAnimationFrame(animationFrame);
-            
-            // Cambia stile durante il drag
-            marqueeElement.style.cursor = 'grabbing';
-        });
-        
-        // Mouse/Touch Move
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            e.preventDefault();
-            
-            const x = e.pageX - marqueeContent.offsetLeft;
-            const walk = (x - startX);
-            
-            // Calcola la velocità in base al tempo trascorso e alla distanza
-            const now = Date.now();
-            const dt = now - lastTimestamp;
-            if (dt > 0) {
-                const dx = e.pageX - lastPageX;
-                velocity = dx / dt * 15; // Moltiplica per un fattore per aumentare l'effetto
-            }
-            
-            lastTimestamp = now;
-            lastPageX = e.pageX;
-            
-            // Aggiorna la posizione
-            scrollLeft = scrollLeft + walk;
-            marqueeContent.style.transform = `translateX(${scrollLeft}px)`;
-            startX = x;
-        });
-        
-        // Mouse/Touch Up / Cancel
-        window.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                marqueeElement.style.cursor = 'grab';
-                
-                // Avvia l'animazione di inerzia
-                animationFrame = requestAnimationFrame(handleInertia);
-            }
-        });
-        
-        window.addEventListener('mouseleave', () => {
-            if (isDragging) {
-                isDragging = false;
-                marqueeElement.style.cursor = 'grab';
-                
-                // Avvia l'animazione di inerzia
-                animationFrame = requestAnimationFrame(handleInertia);
-            }
-        });
-        
-        // Supporto per dispositivi touch
-        marqueeElement.addEventListener('touchstart', (e) => {
-            const touch = e.touches[0];
-            isDragging = true;
-            startX = touch.pageX - marqueeContent.offsetLeft;
-            scrollLeft = parseInt(marqueeContent.style.transform.replace('translateX(', '').replace('px)', '')) || 0;
-            lastPageX = touch.pageX;
-            lastTimestamp = Date.now();
-            velocity = 0;
-            
-            // Ferma qualsiasi animazione di inerzia in corso
-            cancelAnimationFrame(animationFrame);
-        });
-        
-        window.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            
-            const touch = e.touches[0];
-            const x = touch.pageX - marqueeContent.offsetLeft;
-            const walk = (x - startX);
-            
-            // Calcola la velocità
-            const now = Date.now();
-            const dt = now - lastTimestamp;
-            if (dt > 0) {
-                const dx = touch.pageX - lastPageX;
-                velocity = dx / dt * 15;
-            }
-            
-            lastTimestamp = now;
-            lastPageX = touch.pageX;
-            
-            scrollLeft = scrollLeft + walk;
-            marqueeContent.style.transform = `translateX(${scrollLeft}px)`;
-            startX = x;
-        });
-        
-        window.addEventListener('touchend', () => {
-            if (isDragging) {
-                isDragging = false;
-                
-                // Avvia l'animazione di inerzia
-                animationFrame = requestAnimationFrame(handleInertia);
-            }
-        });
-    }
 
-    // Inizializziamo un'animazione automatica di scorrimento
-    let autoScrollSpeed = -1; // Velocità negativa = scorrimento verso sinistra
-    let isAutoScrolling = true;
-
-    function startAutoScroll() {
-        function autoScroll() {
-            if (!isDragging && isAutoScrolling) {
-                scrollLeft += autoScrollSpeed;
-                marqueeContent.style.transform = `translateX(${scrollLeft}px)`;
-                
-                // Logica per scrolling infinito
-                const contentWidth = marqueeContent.offsetWidth / 2;
-                if (scrollLeft < -contentWidth) {
-                    scrollLeft += contentWidth;
-                } else if (scrollLeft > 0) {
-                    scrollLeft -= contentWidth;
+                if (mainNav.classList.contains('active')) {
+                    menuToggle.classList.remove('active');
+                    mainNav.classList.remove('active');
+                    document.body.classList.remove('no-scroll-ft');
                 }
-                
-                requestAnimationFrame(autoScroll);
-            }
-        }
-        
-        requestAnimationFrame(autoScroll);
-    }
-
-    // Inizia lo scorrimento automatico
-    startAutoScroll();
-
-    // Interrompi lo scorrimento automatico quando l'utente interagisce
-    marqueeElement.addEventListener('mouseenter', () => {
-        isAutoScrolling = false;
-    });
-
-    // Ripristina lo scorrimento automatico quando l'utente smette di interagire
-    marqueeElement.addEventListener('mouseleave', () => {
-        // Ritarda leggermente per permettere all'inerzia di completarsi
-        setTimeout(() => {
-            if (!isDragging) {
-                isAutoScrolling = true;
-                startAutoScroll();
-            }
-        }, 1000);
-    });
-
-    // --- THEME TOGGLE ---
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('light-theme');
-            // Salva la preferenza dell'utente
-            const currentTheme = document.documentElement.classList.contains('light-theme') ? 'light' : 'dark';
-            localStorage.setItem('theme', currentTheme);
+            });
         });
-        
-        // Controlla se c'è una preferenza salvata
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            document.documentElement.classList.add('light-theme');
-        }
+
+
+    } // Fine initPageAnimations()
+
+    // --- Mobile Menu ---
+    const menuToggle = document.querySelector('.ft-menu-toggle');
+    const mainNav = document.querySelector('.ft-main-nav');
+    // const varHeaderHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height-ft')) || 80; // Already defined
+
+    if (menuToggle && mainNav) {
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            mainNav.classList.toggle('active');
+            document.body.classList.toggle('no-scroll-ft', mainNav.classList.contains('active'));
+        });
     }
 
-    console.log("Portfolio Reimagined JS Initialized");
-});
+    // --- Footer Year ---
+    const yearSpan = document.getElementById('year-ft');
+    if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+}); // Fine DOMContentLoaded
