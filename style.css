@@ -70,10 +70,15 @@ html::-webkit-scrollbar-thumb { background-color: var(--accent-primary-ft); bord
     transition: transform var(--transition-fast-ft), opacity 0.1s ease;
 }
 body.cursor-ft-hover .cursor-ft-dot { transform: scale(0.5); }
-body.cursor-ft-hover .cursor-ft-outline { transform: scale(1.8); opacity: 0.5; background-color: rgba(0,190,255,0.1); } /* Accent color for hover */
+body.cursor-ft-hover .cursor-ft-outline { transform: scale(1.8); opacity: 0.5; background-color: rgba(0,190,255,0.1); }
 body.cursor-ft-text-hover .cursor-ft-dot { transform: scale(2); background-color: var(--accent-primary-ft); }
 body.cursor-ft-text-hover .cursor-ft-outline { transform: scale(0.8); opacity: 0; }
 
+/* Hide cursor on mobile */
+@media (max-width: 768px) {
+    .cursor-ft { display: none; }
+    body { cursor: auto; }
+}
 
 /* Preloader */
 .preloader-ft {
@@ -349,14 +354,21 @@ section { padding: 120px 5% 100px; position: relative; overflow: hidden; }
 }
 .ft-marquee-content-certs {
     display: flex; white-space: nowrap;
-    font-family: var(--font-primary-ft); font-size: 1.3rem; /* Adjusted size */
+    font-family: var(--font-primary-ft); font-size: 1.3rem;
     color: var(--text-secondary-ft); letter-spacing: 1px;
-    animation: ft-marquee-certs-flow 50s linear infinite;
+    animation: ft-marquee-certs-flow 30s linear infinite; /* Velocità aumentata da 50s a 30s */
 }
 .ft-marquee-content-certs span { margin: 0 20px; }
 .ft-marquee-content-certs .cert-icon-ft { color: var(--accent-primary-ft); font-weight: bold; }
 @keyframes ft-marquee-certs-flow { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
+
+/* Mobile: velocità ancora maggiore */
+@media (max-width: 768px) {
+    .ft-marquee-content-certs {
+        animation: ft-marquee-certs-flow 15s linear infinite; /* Ancora più veloce su mobile */
+    }
+}
 
 /* Education Section */
 .ft-education-section { background-color: var(--bg-main-ft); }
