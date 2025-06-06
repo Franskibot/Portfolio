@@ -53,47 +53,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- CURSOR ---
     const cursor = document.querySelector('.cursor-ft');
-    const cursorDot = cursor.querySelector('.cursor-ft-dot');
-    const cursorOutline = cursor.querySelector('.cursor-ft-outline');
 
-    // Utilizziamo matchMedia per verificare se il dispositivo supporta hover
-    const supportsHover = window.matchMedia('(hover: hover)').matches;
-
-    if (cursor && cursorDot && cursorOutline) {
-        // Mostriamo il cursore solo se il dispositivo supporta hover (mouse collegato)
+    // Only initialize cursor if it exists in the DOM
+    if (cursor) {
+        // Check if device supports hover (has a mouse)
+        const supportsHover = window.matchMedia('(hover: hover)').matches;
+        
         if (supportsHover) {
-            cursor.style.display = 'block';
-            let mouseX = 0, mouseY = 0;
-            let dotX = 0, dotY = 0;
-            let outlineX = 0, outlineY = 0;
-            const outlineDelay = 0.1;
-
-            gsap.set(cursor, { xPercent: -50, yPercent: -50 });
-            gsap.set(cursorDot, { xPercent: -50, yPercent: -50 });
-            gsap.set(cursorOutline, { xPercent: -50, yPercent: -50 });
-
-            window.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-                gsap.to(cursorDot, { duration: 0.03, x: mouseX, y: mouseY });
-            });
-
-            gsap.ticker.add(() => {
-                outlineX += (mouseX - outlineX) * outlineDelay;
-                outlineY += (mouseY - outlineY) * outlineDelay;
-                gsap.set(cursorOutline, { x: outlineX, y: outlineY });
-            });
+            const cursorDot = cursor.querySelector('.cursor-ft-dot');
+            const cursorOutline = cursor.querySelector('.cursor-ft-outline');
             
-            document.querySelectorAll('a, button, .btn-ft, .ft-project-item-link, .ft-menu-toggle, input, textarea, .ft-social-icon-link, .email-magnet-ft').forEach(el => {
-                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-ft-hover'));
-                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-ft-hover'));
-            });
-            document.querySelectorAll('h1, h2, h3, h4, .ft-nav-link span, .ft-logo a, .btn-ft span, .ft-section-tag, .ft-method-link, .ft-project-title').forEach(el => {
-                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-ft-text-hover'));
-                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-ft-text-hover'));
-            });
+            if (cursorDot && cursorOutline) {
+                cursor.style.display = 'block';
+                let mouseX = 0, mouseY = 0;
+                let outlineX = 0, outlineY = 0;
+                const outlineDelay = 0.1;
+
+                gsap.set(cursor, { xPercent: -50, yPercent: -50 });
+                gsap.set(cursorDot, { xPercent: -50, yPercent: -50 });
+                gsap.set(cursorOutline, { xPercent: -50, yPercent: -50 });
+
+                window.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    gsap.to(cursorDot, { duration: 0.03, x: mouseX, y: mouseY });
+                });
+
+                gsap.ticker.add(() => {
+                    outlineX += (mouseX - outlineX) * outlineDelay;
+                    outlineY += (mouseY - outlineY) * outlineDelay;
+                    gsap.set(cursorOutline, { x: outlineX, y: outlineY });
+                });
+                
+                document.querySelectorAll('a, button, .btn-ft, .ft-project-item-link, .ft-menu-toggle, input, textarea, .ft-social-icon-link, .email-magnet-ft').forEach(el => {
+                    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-ft-hover'));
+                    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-ft-hover'));
+                });
+                document.querySelectorAll('h1, h2, h3, h4, .ft-nav-link span, .ft-logo a, .btn-ft span, .ft-section-tag, .ft-method-link, .ft-project-title').forEach(el => {
+                    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-ft-text-hover'));
+                    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-ft-text-hover'));
+                });
+            }
         } else {
+            // On touch devices, ensure cursor is hidden and doesn't initialize
             cursor.style.display = 'none';
+            // Remove the cursor-related classes if they were somehow added
+            document.body.classList.remove('cursor-ft-hover', 'cursor-ft-text-hover');
         }
     }
 
@@ -470,13 +475,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Mobile Menu ---
     const menuToggle = document.querySelector('.ft-menu-toggle');
     const mainNav = document.querySelector('.ft-main-nav');
-    // const varHeaderHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height-ft')) || 80; // Already defined
 
     if (menuToggle && mainNav) {
         menuToggle.addEventListener('click', () => {
             menuToggle.classList.toggle('active');
             mainNav.classList.toggle('active');
+            
+            // Toggle no-scroll class on body
             document.body.classList.toggle('no-scroll-ft', mainNav.classList.contains('active'));
+            
+            // Ensure proper ARIA attributes for accessibility
+            const expanded = mainNav.classList.contains('active');
+            menuToggle.setAttribute('aria-expanded', expanded);
+        });
+        
+        // Close menu when clicking on a link
+        mainNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                mainNav.classList.remove('active');
+                document.body.classList.remove('no-scroll-ft');
+            });
         });
     }
 
