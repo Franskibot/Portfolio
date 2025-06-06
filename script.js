@@ -55,40 +55,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const cursor = document.querySelector('.cursor-ft');
     const cursorDot = cursor.querySelector('.cursor-ft-dot');
     const cursorOutline = cursor.querySelector('.cursor-ft-outline');
-    
-    // Check if device is mobile/tablet
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    
-    if (!isMobile && cursor && cursorDot && cursorOutline) {
-        let mouseX = 0, mouseY = 0;
-        let dotX = 0, dotY = 0;
-        let outlineX = 0, outlineY = 0;
-        const outlineDelay = 0.1;
 
-        gsap.set(cursor, { xPercent: -50, yPercent: -50 });
-        gsap.set(cursorDot, { xPercent: -50, yPercent: -50 });
-        gsap.set(cursorOutline, { xPercent: -50, yPercent: -50 });
+    // Utilizziamo matchMedia per verificare se il dispositivo supporta hover
+    const supportsHover = window.matchMedia('(hover: hover)').matches;
 
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            gsap.to(cursorDot, { duration: 0.03, x: mouseX, y: mouseY });
-        });
+    if (cursor && cursorDot && cursorOutline) {
+        // Mostriamo il cursore solo se il dispositivo supporta hover (mouse collegato)
+        if (supportsHover) {
+            cursor.style.display = 'block';
+            let mouseX = 0, mouseY = 0;
+            let dotX = 0, dotY = 0;
+            let outlineX = 0, outlineY = 0;
+            const outlineDelay = 0.1;
 
-        gsap.ticker.add(() => {
-            outlineX += (mouseX - outlineX) * outlineDelay;
-            outlineY += (mouseY - outlineY) * outlineDelay;
-            gsap.set(cursorOutline, { x: outlineX, y: outlineY });
-        });
-        
-        document.querySelectorAll('a, button, .btn-ft, .ft-project-item-link, .ft-menu-toggle, input, textarea, .ft-social-icon-link, .email-magnet-ft').forEach(el => {
-            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-ft-hover'));
-            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-ft-hover'));
-        });
-        document.querySelectorAll('h1, h2, h3, h4, .ft-nav-link span, .ft-logo a, .btn-ft span, .ft-section-tag, .ft-method-link, .ft-project-title').forEach(el => {
-            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-ft-text-hover'));
-            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-ft-text-hover'));
-        });
+            gsap.set(cursor, { xPercent: -50, yPercent: -50 });
+            gsap.set(cursorDot, { xPercent: -50, yPercent: -50 });
+            gsap.set(cursorOutline, { xPercent: -50, yPercent: -50 });
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                gsap.to(cursorDot, { duration: 0.03, x: mouseX, y: mouseY });
+            });
+
+            gsap.ticker.add(() => {
+                outlineX += (mouseX - outlineX) * outlineDelay;
+                outlineY += (mouseY - outlineY) * outlineDelay;
+                gsap.set(cursorOutline, { x: outlineX, y: outlineY });
+            });
+            
+            document.querySelectorAll('a, button, .btn-ft, .ft-project-item-link, .ft-menu-toggle, input, textarea, .ft-social-icon-link, .email-magnet-ft').forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-ft-hover'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-ft-hover'));
+            });
+            document.querySelectorAll('h1, h2, h3, h4, .ft-nav-link span, .ft-logo a, .btn-ft span, .ft-section-tag, .ft-method-link, .ft-project-title').forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-ft-text-hover'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-ft-text-hover'));
+            });
+        } else {
+            cursor.style.display = 'none';
+        }
     }
 
 

@@ -75,7 +75,7 @@ body.cursor-ft-text-hover .cursor-ft-dot { transform: scale(2); background-color
 body.cursor-ft-text-hover .cursor-ft-outline { transform: scale(0.8); opacity: 0; }
 
 /* Hide cursor on mobile */
-@media (max-width: 768px) {
+@media (hover: none) {
     .cursor-ft { display: none; }
     body { cursor: auto; }
 }
@@ -356,7 +356,7 @@ section { padding: 120px 5% 100px; position: relative; overflow: hidden; }
     display: flex; white-space: nowrap;
     font-family: var(--font-primary-ft); font-size: 1.3rem;
     color: var(--text-secondary-ft); letter-spacing: 1px;
-    animation: ft-marquee-certs-flow 30s linear infinite; /* Velocità aumentata da 50s a 30s */
+    animation: ft-marquee-certs-flow 20s linear infinite; /* Accelerato da 30s a 20s */
 }
 .ft-marquee-content-certs span { margin: 0 20px; }
 .ft-marquee-content-certs .cert-icon-ft { color: var(--accent-primary-ft); font-weight: bold; }
@@ -366,7 +366,7 @@ section { padding: 120px 5% 100px; position: relative; overflow: hidden; }
 /* Mobile: velocità ancora maggiore */
 @media (max-width: 768px) {
     .ft-marquee-content-certs {
-        animation: ft-marquee-certs-flow 15s linear infinite; /* Ancora più veloce su mobile */
+        animation: ft-marquee-certs-flow 10s linear infinite; /* Accelerato da 15s a 10s */
     }
 }
 
@@ -694,19 +694,4 @@ section { padding: 120px 5% 100px; position: relative; overflow: hidden; }
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-font-smoothing: subpixel-antialiased;
-}
-
-/* Add this to your CSS */
-.smooth-scroll-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    border: 1px solid var(--accent-primary-ft);
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
 }
