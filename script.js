@@ -1,23 +1,54 @@
+// Browser-specific scrolling fix for Chromium browsers (Chrome, Edge, Brave)
+if (navigator.userAgent.indexOf("Chrome") > -1 || navigator.userAgent.indexOf("Edg") > -1) {
+    // Create style element
+    const style = document.createElement('style');
+    style.textContent = `
+        html, body {
+            scroll-behavior: auto !important;
+        }
+        * {
+            -webkit-overflow-scrolling: auto !important;
+        }
+    `;
+    // Append to head immediately
+    document.head.appendChild(style);
+}
+
 // js/script.js
 document.addEventListener('DOMContentLoaded', () => {
     // --- SPLITTING JS INITIALIZATION ---
     Splitting();
 
     // --- LENIS SMOOTH SCROLL ---
-    const lenis = new Lenis({
-        duration: 1.5,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-        wheelMultiplier: 0.8,
-        smoothTouch: true,
-        touchMultiplier: 1.5,
-    });
-    function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
+    // Browser detection for scroll optimization
+    let wheelMultiplierValue = 1.2;
+    let durationValue = 0.3;
+
+    // Detect Brave/Chrome
+    if (navigator.userAgent.indexOf("Chrome") > -1) {
+        wheelMultiplierValue = 1.3;
+        durationValue = 0.25;
     }
-    requestAnimationFrame(raf);
-    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    // Detect Edge
+    else if (navigator.userAgent.indexOf("Edg") > -1) {
+        wheelMultiplierValue = 1.4;
+        durationValue = 0.2;
+    } 
+
+    // Completely disable smooth scrolling for mouse wheel but keep for programmatic scrolling
+    const lenis = new Lenis({
+        duration: 0.1,
+        smoothWheel: false,     // Disable smooth wheel scrolling
+        wheelMultiplier: 1,     // Use browser default
+        smoothTouch: false,     // Disable for touch too
+        touchMultiplier: 1,
+        infinite: false
+    });
+
+    // Only use Lenis for programmatic scrolling (clicking links)
+    gsap.ticker.add((time) => { 
+        lenis.raf(time * 1000); 
+    });
     gsap.ticker.lagSmoothing(0);
 
     // --- CURSOR ---
@@ -392,8 +423,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        // Add throttling to your nav update function
+        let scrollThrottleTimer;
+        function throttledUpdateActiveNavLink() {
+            if (!scrollThrottleTimer) {
+                scrollThrottleTimer = setTimeout(() => {
+                    updateActiveNavLink();
+                    scrollThrottleTimer = null;
+                }, 100);  // Update at most every 100ms
+            }
+        }
+
         if (pageSections.length && navLinks.length) {
-            lenis.on('scroll', updateActiveNavLink);
+            lenis.on('scroll', throttledUpdateActiveNavLink);
             updateActiveNavLink();
         }
         
@@ -437,3 +479,66 @@ document.addEventListener('DOMContentLoaded', () => {
     if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 
 }); // Fine DOMContentLoaded
+
+// Add this after Lenis initialization
+// Reduce animation processing during rapid scrolling
+let isScrollingTimeout;
+lenis.on('scroll', () => {
+    // Clear timeout if scroll is ongoing
+    window.clearTimeout(isScrollingTimeout);
+    
+    // Set a timeout to run after scrolling ends (300ms)
+    isScrollingTimeout = setTimeout(() => {
+        // Optional: run heavier animations only after scrolling stops
+    }, 300);
+});
+
+// Add this after your Lenis initialization:
+
+// Track scrolling state
+let isScrolling = false;
+let scrollTimeout;
+
+// Pause animations during active scrolling
+window.addEventListener('wheel', () => {
+    if (!isScrolling) {
+        isScrolling = true;
+        document.body.classList.add('is-scrolling');
+        
+        // Pause GSAP animations during scroll
+        gsap.globalTimeline.pause();
+    }
+    
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+        isScrolling = false;
+        document.body.classList.remove('is-scrolling');
+        
+        // Resume animations after scrolling stops
+        gsap.globalTimeline.resume();
+    }, 200);
+}, { passive: true });
+
+// Add this at the end of your DOMContentLoaded event:
+
+// Toggle button for disabling smooth scroll
+const toggleButton = document.getElementById('toggle-smooth-scroll');
+if (toggleButton) {
+    toggleButton.addEventListener('click', () => {
+        if (lenis.isStopped) {
+            lenis.start();
+            toggleButton.textContent = 'Disattiva Scroll Fluido';
+            localStorage.setItem('smoothScrollEnabled', 'true');
+        } else {
+            lenis.stop();
+            toggleButton.textContent = 'Attiva Scroll Fluido';
+            localStorage.setItem('smoothScrollEnabled', 'false');
+        }
+    });
+    
+    // Check saved preference
+    if (localStorage.getItem('smoothScrollEnabled') === 'false') {
+        lenis.stop();
+        toggleButton.textContent = 'Attiva Scroll Fluido';
+    }
+}

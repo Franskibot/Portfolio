@@ -661,3 +661,52 @@ section { padding: 120px 5% 100px; position: relative; overflow: hidden; }
 }
 
 [data-anim] { opacity: 0; }
+
+/* Add to your CSS - makes animations smoother */
+.ft-hero-section, 
+.parallax-divider-ft svg,
+.ft-bg-shape,
+.ft-bg-grid-pattern,
+.ft-marquee-content-certs,
+.ft-skills-marquee-track {
+    will-change: transform;
+}
+
+/* Optimize performance during scrolling */
+.is-scrolling .parallax-divider-ft svg,
+.is-scrolling .ft-visual-card,
+.is-scrolling .ft-bg-shape,
+.is-scrolling .ft-project-image-container img,
+.is-scrolling [data-anim] {
+    transition: none !important;
+    animation-play-state: paused !important;
+}
+
+/* Force hardware acceleration on key elements */
+.ft-content-wrapper,
+.ft-section-divider,
+.ft-main-header,
+.ft-bg-shape,
+.ft-project-item,
+.ft-marquee-content-certs,
+.ft-timeline-container,
+.ft-skills-marquee-track {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* Add this to your CSS */
+.smooth-scroll-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border: 1px solid var(--accent-primary-ft);
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
