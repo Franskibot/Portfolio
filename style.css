@@ -339,7 +339,7 @@ section { padding: 120px 5% 100px; position: relative; overflow: hidden; }
 .ft-skills-section { background-color: var(--bg-main-ft); } /* Changed from bg-element for variety */
 .ft-skills-container {
     max-width: var(--container-width-ft); margin: 0 auto;
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* MODIFICATO: 380px a 320px */
     gap: 40px;
 }
 .ft-skills-category-block { /* Renamed from skills-category */
@@ -347,7 +347,7 @@ section { padding: 120px 5% 100px; position: relative; overflow: hidden; }
     border-radius: var(--border-radius-main-ft); border: 1px solid var(--border-color-ft);
 }
 .ft-category-title {
-    font-family: var(--font-primary-ft); font-size: 1.8rem; color: var(--accent-primary-ft);
+    font-family: var(--font-primary-ft); font-size: 1.6rem; /* MODIFICATO: da 1.8rem */ color: var(--accent-primary-ft);
     text-transform: uppercase; letter-spacing: 1px; margin-bottom: 25px;
     border-bottom: 2px solid var(--border-color-strong-ft); padding-bottom: 10px;
 }
@@ -374,7 +374,7 @@ section { padding: 120px 5% 100px; position: relative; overflow: hidden; }
 }
 .ft-skills-marquee-track {
     display: flex; white-space: nowrap;
-    animation: ft-marquee-flow 40s linear infinite;
+    animation: ft-marquee-flow 20s linear infinite; /* MODIFICATO: 40s a 20s */
 }
 .ft-marquee-item {
     font-family: var(--font-display-ft); font-size: 2.5rem; color: var(--text-secondary-ft);
